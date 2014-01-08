@@ -8,8 +8,9 @@ Usage
 ========
 
 The following usage is allowed:
-./eqinfo.py -h
+eqinfo.py -h
 usage: eqinfo.py [-h] [-n NUMBER] -t TIME [-v] [-mM MINMAG] [-MM MAXMAG]
+                 [-md MINDEP]
 
 Code to get earthquake info
 
@@ -23,6 +24,9 @@ optional arguments:
                         Minimum magnitude
   -MM MAXMAG, --MaxMag MAXMAG
                         Minimum magnitude
+  -md MINDEP, --mindep MINDEP
+                        Minimum depth (km)
+
 
 Output
 ========
@@ -34,8 +38,6 @@ latitude, longitude, depth, and magnitude
 To Do
 ========
 We need to add different event types beyond earthquakes.
-
-Need to include depth searches.
 
 We also need to add various possible outputs.
 

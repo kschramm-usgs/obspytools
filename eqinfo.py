@@ -42,7 +42,8 @@ parser.add_argument('-MM','--MaxMag',action="store",dest = "maxMag", \
 default = 9.0, help= "Minimum magnitude", type = float, required = False)
 
 #We probably want to search over depth also
-
+parser.add_argument('-md','--mindep',action="store",dest = "minDep", \
+default = 0.0, help= "Minimum depth (km)", type = float, required = False)
 
 
 parserval = parser.parse_args()
@@ -57,6 +58,7 @@ else:
 #Lets set the search for the following magnitude scale
 searchParameter = '&minmagnitude=' + str(parserval.minMag) + \
 	'&maxmagnitude=' + str(parserval.maxMag) + \
+	'&mindepth=' + str(parserval.minDep) + \
 	'&eventtype=earthquake'
 
 #Lets setup the time for the search
