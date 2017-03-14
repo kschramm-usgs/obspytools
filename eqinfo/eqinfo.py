@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+
 import sys
 
 from obspy.core.event import read_events
@@ -64,6 +65,7 @@ searchParameter = '&minmagnitude=' + str(parserval.minMag) + \
 #Lets setup the time for the search
 if parserval.time:
         try:
+                stime = UTCDateTime(parserval.time)
 		if debug:
 			print 'Here is the time in: ' + \
 				parserval.time.split(',')[0]
@@ -72,7 +74,7 @@ if parserval.time:
                         parserval.time.split(',')[1] + "T00:00:00.0") 
         except:
                 print 'Problem reading epoch'
-                sys.exit(0)
+                #sys.exit(0)
 
         if debug:
                 print 'Here is the epoch time of interest:' + str(stime)   
