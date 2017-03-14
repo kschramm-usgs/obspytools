@@ -16,7 +16,7 @@ from obspy.core import UTCDateTime
 ###############################################################################
 
 #Here are the fixed variables
-website = 'http://comcat.cr.usgs.gov/fdsnws/event/1/query?'
+website = 'http://earthquake.usgs.gov/fdsnws/event/1/query?'
 
 #Lets setup the command line parser
 parser = argparse.ArgumentParser(description='Code to get earthquake info')
@@ -49,42 +49,44 @@ default = 0.0, help= "Minimum depth (km)", type = float, required = False)
 parserval = parser.parse_args()
 
 if parserval.debug:
-        print 'Running in debug mode'
-        debug = True
+    print 'Running in debug mode'
+    debug = True
 else:
-        debug = False
+    debug = False
 
 
 #Lets set the search for the following magnitude scale
 searchParameter = '&minmagnitude=' + str(parserval.minMag) + \
-	'&maxmagnitude=' + str(parserval.maxMag) + \
-	'&mindepth=' + str(parserval.minDep) + \
-	'&eventtype=earthquake'
+'&maxmagnitude=' + str(parserval.maxMag) + \
+'&mindepth=' + str(parserval.minDep) + \
+'&eventtype=earthquake'
 
 #Lets setup the time for the search
 if parserval.time:
-        try:
-		if debug:
-			print 'Here is the time in: ' + parserval.time.split(',')[0]
-
-                stime = UTCDateTime(parserval.time.split(',')[0] + "-" + \
-                        parserval.time.split(',')[1] + "T00:00:00.0") 
-        except:
-                print 'Problem reading epoch'
-                sys.exit(0)
-
+    try:
         if debug:
-                print 'Here is the epoch time of interest:' + str(stime)   
+           print 'Here is the time in: ' + \
+                 parserval.time.split(',')[0]
 
-	etime = stime + parserval.number*24*60*60 
+        stime = UTCDateTime(parserval.time.split(',')[0] + "-" + \
+                parserval.time.split(',')[1] + "T00:00:00.0") 
+    
+    except:
+        print 'Problem reading epoch'
+        #sys.exit(0)
+
+    if debug:
+        print 'Here is the epoch time of interest:' + str(stime)   
+
+etime = stime + parserval.number*24*60*60 
 
 #Lets format for the USGS webservices
 stimeString = 'starttime=' + (stime.formatIRISWebService()).replace('T','%20')
 etimeString = 'endtime=' + (etime.formatIRISWebService()).replace('T','%20')
 
 if debug:
-	print 'Start time string: ' + stimeString
-	print 'End time string: ' + etimeString
+    print 'Start time string: ' + stimeString
+    print 'End time string: ' + etimeString
 
 #Here is the final query
 querystring = website + stimeString + '&' + etimeString + searchParameter
@@ -95,21 +97,22 @@ cat = readEvents(querystring)
 #Now lets scan through and print out the results
 for event in cat:
 #Just use one magnitude
-	magString = str(event.magnitudes[0].mag)
+    magString = str(event.magnitudes[0].mag)
 
 #Lets use all the different origins we find
-	for origin in event.origins:
+    for origin in event.origins:
 
 #Format the time for year doy hr:mn:sc
-		timeString = str(origin.time.year) + ' ' + \
-			str(origin.time.julday).zfill(3) + \
-			' ' + str(origin.time.hour).zfill(2) + ':' + \
-			str(origin.time.minute).zfill(2) + ':' + \
-			str(origin.time.second).zfill(2)
+        timeString = str(origin.time.year) + ' ' + \
+                     str(origin.time.julday).zfill(3) + ' ' +\
+                     str(origin.time.hour).zfill(2) + ':' + \
+                     str(origin.time.minute).zfill(2) + ':' + \
+                     str(origin.time.second).zfill(2)
 
-#Lets only get a few sig figs for everything else		  
-		latString = ("%4.2f" % origin.latitude).rjust(6)
-		lonString = ("%4.2f" % origin.longitude).rjust(7)
-		depthString = ("%4.2f" % (origin.depth/1000)).rjust(6)
+#Lets only get a few sig figs for everything else
+        latString = ("%4.2f" % origin.latitude).rjust(6)
+        lonString = ("%4.2f" % origin.longitude).rjust(7)
+        depthString = ("%4.2f" % (origin.depth/1000)).rjust(6)
 #Print the event to the screen
-		print timeString + ' ' + latString + ' ' + lonString + ' ' + depthString + ' ' + magString
+        print timeString + ' ' + latString + ' ' + lonString + ' ' + \
+              depthString + ' ' + magString
